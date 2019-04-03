@@ -5,14 +5,10 @@
         v-for="(user, index) in Usuario"
         :key="index">
             <div>
-                <h3>{{user.user}}</h3> - email: {{user.email}} -
-                <br>"{{user.bio}}"
-                <!--<div v-if="">
-                    <button>Mostrar Contraseña</button>
-                </div>!-->
+                <h4>Usuario : {{user.user}}</h4> - email: {{user.email}}
+                <br>-"{{user.bio}}"
             </div>
         </ul>
-        <button v-on:click="logout()">LogOut</button>
     </div>
 </template>
 
