@@ -1,7 +1,9 @@
 <template>
     <div id="app">
         <div id="nav">
-            <router-link v-if="authenticated" to="/login" v-on:click.native="logout()" replace>Logout</router-link>
+            <router-link v-if="authenticated" to="/login" v-on:click.native="logout()" replace>Logout</router-link><br v-if="authenticated">
+            <router-link v-if="authenticated" to="/secure">Home</router-link><br v-if="authenticated">
+            <router-link v-if="authenticated" to="/secure/edit">Edit</router-link>
         </div>
         <router-view @authenticated="setAuthenticated" />
     </div>
@@ -22,16 +24,15 @@
             }
         },
         methods: {
-            setAuthenticated(status) {
-                this.authenticated = status;
+            setAuthenticated(status, user) {
+                this.authenticated = status
+                this.currentuser = user
+                localStorage.setItem("currentUser", JSON.stringify(user))
             },
             logout() {
                 this.authenticated = false;
                 this.currentuser = null;
             },
-            setCurrentUser(user){
-                this.currentuser = user;
-            }
         }
     }
 </script>

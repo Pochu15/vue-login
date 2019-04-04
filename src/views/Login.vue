@@ -1,7 +1,7 @@
 <template>
     <div id="login">
         <h1>Login</h1>
-        <input type="text" name="username" v-model="input.username" placeholder="Email" />
+        <input type="text" name="username" v-model="input.username" placeholder="Username" />
         <input type="password" name="password" v-model="input.password" placeholder="Password" />
         <button type="button" v-on:click="login()">Login</button>
         <div class="warning">
@@ -33,13 +33,12 @@
             async login() {
                 var aux = this
                 this.axios.post('http://localhost:3000/api/user/log',{
-                    email: this.input.username,
+                    user: this.input.username,
                     pwd: this.input.password
                 })
                 .then((response) => {
-                    console.log(response)
-                    this.$emit("authenticated", true)
-                    this.$router.replace({ name: "secure" });
+                    this.$emit("authenticated", true, response.data.user)
+                    this.$router.replace({ name: "secure" })
                 })
                 .catch((error) => {
                     if(this.input.username == '' || this.input.password == ''){

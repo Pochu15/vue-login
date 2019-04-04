@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import LoginComponent from "./views/Login.vue"
 import SecureComponent from "./views/Secure.vue"
 import RegisterComponent from "./components/Register.vue"
+import EditComponent from "./views/Edit.vue"
 
 Vue.use(Router)
 
@@ -22,6 +23,11 @@ export default new Router({
             path: "/register",
             name: "register",
             component: RegisterComponent
+        },
+        {
+            path: "/secure/edit",
+            name: "edit",
+            component: EditComponent
         }
     ]
 })

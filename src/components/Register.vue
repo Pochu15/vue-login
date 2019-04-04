@@ -8,7 +8,8 @@
             <input type="password" name="password" v-model="input.password2" placeholder="Repeat your password"/><br>
             <button @click="register()">Register</button>
             {{warning}}
-        </div>
+        </div><br><br><br>
+        <button @click="goBack()">Go back</button>
     </div>
 </template>
 
@@ -42,11 +43,16 @@ export default {
                 })
                 .then((response) =>{
                     vue.warning = "User registered"
+                    this.$emit("authenticated", true, response.data.user)
+                    this.$router.replace({name: "secure"})
                 })
                 .catch((err) => {
                     vue.warning = `Error. Ya existe un usuario registrado con ese nombre / email`
                 })
             }
+        },
+        goBack(){
+            this.$router.replace({name: "login"})
         }
     }
 }

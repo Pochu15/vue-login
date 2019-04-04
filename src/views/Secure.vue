@@ -1,6 +1,7 @@
 <template>
     <div id="secure">
-        <h1>Usuarios</h1>
+        <h1>Welcome {{user}}</h1>
+        <h1>Users</h1>
         <ul
         v-for="(user, index) in Usuario"
         :key="index">
@@ -16,8 +17,10 @@
     export default {
         name: 'Secure',
         data() {
+            var user = JSON.parse(localStorage.getItem("currentUser"))
             return{
                 Usuario: [],
+                user : user.user
             }
         },
         methods:{
