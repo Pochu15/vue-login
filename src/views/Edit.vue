@@ -20,12 +20,13 @@
 
         </div><br><br><br>
         <button @click="goBack()">Go back</button>
+        <br><br><br><br><br>
+        <button @click="deleteUser()">Click here to delete your user</button>
     </div>  
 </template>
 
 <script>
 import App from '../App.vue'
-import { error } from 'util';
 export default {
     name: 'Edit',
     data(){
@@ -84,6 +85,33 @@ export default {
                 })
                 .catch((err) =>{
                     aux.warning = "Unexpected error!!"
+                })
+            }
+        },
+        async deleteUser(){
+            if(this.input.password == ""){
+                alert("You must enter your password before deleting your account!")
+            } else {
+                this.axios.post('http://localhost:3000/api/user/log',{
+                    user: this.input.username,
+                    pwd: this.input.password
+                })
+                .then((response) =>{
+                    if(confirm("Are you REALLY sure you want to delete your user?")){
+                    var aux = this
+                    this.axios.put(`http://localhost:3000/api/user/remove/${this.user}`,)
+                    .then((response) => {
+                        alert("Your data will be kept for one month.\nIf you log in again, your account will be restored")
+                        this.$emit("authenticated", false, null)
+                        this.$router.replace({ name: "login" })
+                    })
+                    .catch((err) => {
+                        alert("Error deleting your data. Try again in a few minutes")
+                    })
+                }
+                })
+                .catch((err) => {
+                    alert("Password incorrect. Access denied.")
                 })
             }
         }

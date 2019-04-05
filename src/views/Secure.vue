@@ -1,13 +1,16 @@
 <template>
-    <div id="secure">
+    <div id="secure" v-if="user != null">
         <h1>Welcome {{user}}</h1>
         <h1>Users</h1>
+        <div class="admin" v-if="admin">You are an admin</div>
         <ul
         v-for="(user, index) in Usuario"
         :key="index">
-            <div>
-                <h4>Usuario : {{user.user}}</h4> - email: {{user.email}}
-                <br>-"{{user.bio}}"
+            <div v-if="user.isActive">
+                <h4 v-if="user.isAdmin">Admin: : {{user.user}}</h4>
+                <h4 v-else> User : {{user.user}}</h4>- email: {{user.email}}
+                <br>-"{{user.bio}}"<br v-if="admin">
+                <button v-if="admin">Edit user</button>
             </div>
         </ul>
     </div>
@@ -20,7 +23,8 @@
             var user = JSON.parse(localStorage.getItem("currentUser"))
             return{
                 Usuario: [],
-                user : user.user
+                user : user.user,
+                admin : user.isAdmin
             }
         },
         methods:{
@@ -49,5 +53,10 @@
         border: 1px solid #CCCCCC;
         padding: 20px;
         margin-top: 10px;
+    }
+    .admin{
+    color: orangered;
+    font-size: 30px;
+    text-align: center
     }
 </style>

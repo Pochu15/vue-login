@@ -5,7 +5,7 @@
             <router-link v-if="authenticated" to="/secure">Home</router-link><br v-if="authenticated">
             <router-link v-if="authenticated" to="/secure/edit">Edit</router-link>
         </div>
-        <router-view @authenticated="setAuthenticated" />
+        <router-view @authenticated="setAuthenticated"/>
     </div>
 </template>
 
@@ -32,6 +32,7 @@
             logout() {
                 this.authenticated = false;
                 this.currentuser = null;
+                localStorage.setItem("currentUser", null)
             },
         }
     }
