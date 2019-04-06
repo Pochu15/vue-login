@@ -64,7 +64,6 @@ export default {
                         pwd: aux.input.password
                     })
                     .then((response) =>{
-                        console.log(`http://localhost:3000/api/user/${aux.user}`)
                         this.axios.put(`http://localhost:3000/api/user/${aux.user}`,{
                             user: aux.input.username,
                             pwd: (aux.input.newpassword == ""?aux.input.password:aux.input.newpassword),

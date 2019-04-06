@@ -4,6 +4,7 @@ import LoginComponent from "./views/Login.vue"
 import SecureComponent from "./views/Secure.vue"
 import RegisterComponent from "./components/Register.vue"
 import EditComponent from "./views/Edit.vue"
+import EditAdmin from "./components/EditAdmin.vue"
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
             path: "/secure/edit",
             name: "edit",
             component: EditComponent
+        },
+        {
+            path: "/secure/admin/edit",
+            name: "editAdmin",
+            component: EditAdmin
         }
     ]
 })

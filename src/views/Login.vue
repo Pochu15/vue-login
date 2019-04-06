@@ -53,6 +53,8 @@
             gotoreg(){
                 this.$router.replace({name: "register"})
             }
+        }, created : function(){
+            this.$emit("authenticated", false, null)
         }
     }
 </script>

@@ -10,7 +10,7 @@
                 <h4 v-if="user.isAdmin">Admin: : {{user.user}}</h4>
                 <h4 v-else> User : {{user.user}}</h4>- email: {{user.email}}
                 <br>-"{{user.bio}}"<br v-if="admin">
-                <button v-if="admin">Edit user</button>
+                <button v-if="admin" @click="editAdmin(user)">Edit user</button>
             </div>
         </ul>
     </div>
@@ -39,6 +39,10 @@
             logout(){
                 this.$emit('authenticated', false)
                 this.$router.replace({name: 'login'})
+            },
+            editAdmin(user){
+                localStorage.setItem("userEdit",JSON.stringify(user))
+                this.$router.replace({ name: 'editAdmin' })
             }
         },
         created(){
