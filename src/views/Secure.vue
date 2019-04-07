@@ -13,6 +13,20 @@
                 <button v-if="admin" @click="editAdmin(user)">Edit user</button>
             </div>
         </ul>
+        <button v-if="admin" @click="Inactive()">{{verb}} INACTIVE users</button>
+        <div v-if="showInactive">
+            <h1>Inactive users</h1>
+            <ul
+            v-for="(user, index) in Usuario"
+            :key="index">
+                <div v-if="user.isActive == false">
+                    <h4 v-if="user.isAdmin">Admin: : {{user.user}}</h4>
+                    <h4 v-else> User : {{user.user}}</h4>- email: {{user.email}}
+                    <br>-"{{user.bio}}"<br v-if="admin">
+                    <button v-if="admin" @click="editAdmin(user)">Edit user</button>
+                </div>
+        </ul>
+        </div>
     </div>
 </template>
 
@@ -24,7 +38,9 @@
             return{
                 Usuario: [],
                 user : user.user,
-                admin : user.isAdmin
+                admin : user.isAdmin,
+                showInactive : false,
+                verb : "Show"
             }
         },
         methods:{
@@ -43,7 +59,13 @@
             editAdmin(user){
                 localStorage.setItem("userEdit",JSON.stringify(user))
                 this.$router.replace({ name: 'editAdmin' })
-            }
+            },
+            Inactive(){
+                this.showInactive = !this.showInactive
+                if(!this.showInactive)
+                    this.verb = "Show"
+                else this.verb = "Hide"
+            },
         },
         created(){
             this.getData()

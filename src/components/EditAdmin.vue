@@ -17,7 +17,7 @@
         <br><br><br>
         <button @click="goBack()">Go back</button>
         <br><br><br><br><br>
-        <button @click="deactivateUser()">Deactivate user</button>
+        <button @click="deactivateUser()">{{verb}} user</button>
         <button @click="deleteUser()">Delete user</button>
     </div>
 </template>
@@ -40,71 +40,95 @@ export default {
                 newpassword2: "",
                 isAdmin : user.isAdmin
             },
-            warning : ""
+            warning : "",
+            verb : ""
         }
-    }, methods : {
-        goBack(){
-            localStorage.setItem("userEdit", null)
-            this.$router.replace({ name: "secure" })
-        },
-        async checkpwd(pwd){
-            var bool = false
-            if(pwd == ""){
-                this.warning = "You must enter your password to edit this user's data"
+    }, methods: {
+        async editUser(){
+            if(this.input.password == ""){
+                this.warning = "You must enter your pasword to change this user data"
+            } else if(this.input.newpassword != this.input.newpassword2){
+                this.warning = "Passwords don't match!"
             } else {
-                this.axios.post('http://localhost:3000/api/user/log', {
+                this.axios.post(`http://localhost:3000/api/user/log`, {
                     user: this.currentuser.user,
-                    pwd: pwd
+                    pwd: this.input.password
                 })
-                .then((response) => {bool = true})
-                .catch((error) => {alert("Wrong password. Changed denied.")})
-                return bool
+                .then((response)=>{
+                    if(this.input.newpassword == ""){
+                        this.axios.put(`http://localhost:3000/api/user/${this.user.user}`, {
+                            user: this.input.username,
+                            email: this.input.email,
+                            bio: this.input.bio,
+                            isAdmin: this.input.isAdmin
+                        })
+                        .then((response) => { this.warning = "Data changed succesfully" })
+                        .catch((err) => { this.warning = `Unexpected error ${err}`})
+                    } else {
+                        this.axios.put(`http://localhost:3000/api/user/${this.user.user}`, {
+                            user: this.input.username,
+                            pwd: this.input.newpassword,
+                            email: this.input.email,
+                            bio: this.input.bio,
+                            isAdmin: this.input.isAdmin
+                        })
+                        .then((response) => { this.warning = "Data changed succesfully" })
+                        .catch((err) => { this.warning = `Unexpected error ${err}`})
+                    }
+                })
+                .catch((err) =>{
+                    this.warning = "Wrong password. Change denied"
+                })
             }
-
         },
-        editUser(){
-            if(this.input.newpassword == this.input.newpassword2){
-                if(this.checkpwd(this.input.password)){
-                    if(confirm("Are you sure you want to change this user's data?")){
-                        if(this.input.pwd != ""){
-                            this.axios.put(`http://localhost:3000/api/user/${this.user.user}`,{
-                            user: this.input.username,
-                            pwd: this.input.pwd,
-                            email: this.input.email,
-                            bio: this.input.bio,
-                            isAdmin: this.input.isAdmin
-
+        async deactivateUser(){
+            if(this.input.password == ""){
+                this.warning = "You must enter your password before deactivating this user."
+            } else {
+                this.axios.post(`http://localhost:3000/api/user/log`,{
+                    user: this.currentuser.user,
+                    pwd: this.input.password
+                })
+                .then((response) =>{
+                    if(confirm("Are you really sure you want to "+(this.user.isActive?"de":"")+"activate this user?\n"+(this.user.isActive?"(This change can be undone.)":""))){
+                        this.axios.put(`http://localhost:3000/api/user/remove/${this.user.user}`,)
+                        .then((response) => {
+                            if(this.user.isActive) alert("User deactivated correctly. If the user attemps to log in again, his account will be restored.")
+                            else alert("The user is active again")
+                            this.$router.replace({ name: "secure" })
+                        })
+                        .catch((err) => { this.warning = `Unexpected error: ${err}` })
+                    }
+                })
+                .catch((err) => { this.warning = "Wrong password. Change denied." })
+            }
+        },
+        async deleteUser(){
+            if(this.input.password == ""){
+                this.warning = "You must enter your password to delete this user."
+            } else {
+                this.axios.post(`http://localhost:3000/api/user/log`, {
+                    user: this.currentuser.user,
+                    pwd: this.input.password
+                })
+                .then((response) => {
+                    if(confirm("Are you REALLY sure you want to delete this user?")){
+                        if(confirm(`This action can't be undone. Are you REALLY sure you want to continue?`)){
+                            this.axios.delete(`http://localhost:3000/api/user/${this.user.user}`)
+                            .then((response) => {
+                                alert("User deleted correctly. That's sad...!!")
+                                this.$router.replace({ name: 'secure' })
                             })
-                            .then((response) =>{
-                                this.warning = "Data changed succesfully"
-                                localStorage.setItem("userEdit", null)
-                                this.$router.replace({name: "secure"})
-                            })
-                            .catch((error) =>{
-                                this.warning = "Error changing data."
-                            })
-                        } else {
-                            this.axios.put(`http://localhost:3000/api/user/${this.user.user}`,{
-                            user: this.input.username,
-                            email: this.input.email,
-                            bio: this.input.bio,
-                            isAdmin: this.input.isAdmin
-
-                            })
-                            .then((response) =>{
-                                this.warning = "Data changed succesfully"
-                                localStorage.setItem("userEdit", null)
-                                this.$router.replace({name: "secure"})
-                            })
-                            .catch((error) =>{
-                                this.warning = "Error changing data."
-                            })
+                            .catch((err) => { alert(`Unexpected error. ${this.user.user}'s ass is safe... for now.`)})
                         }
                     }
-                }
-            } else this.warning = "Passwords do not match!"
+                })
+                .catch((err) => { this.warning="Wrong password. Change denied."})
+            }
         }
-    },
+    }, created(){
+        this.verb = this.user.isActive?"Deactivate":"Activate"
+    }
 
 }
 </script>

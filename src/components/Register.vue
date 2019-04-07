@@ -42,9 +42,8 @@ export default {
                     email: vue.input.email
                 })
                 .then((response) =>{
-                    vue.warning = "User registered"
-                    this.$emit("authenticated", true, response.data.user)
-                    this.$router.replace({name: "secure"})
+                    alert("User registered")
+                    this.$router.replace({name: "login"})
                 })
                 .catch((err) => {
                     vue.warning = `Error. Ya existe un usuario registrado con ese nombre / email`
